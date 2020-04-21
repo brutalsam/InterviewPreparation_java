@@ -1,5 +1,7 @@
 package com.company.solutions;
 
+import java.util.Stack;
+
 /**
  * Given n non-negative integers representing an elevation map where the width of each bar is 1,
  * compute how much water it is able to trap after raining.
@@ -57,13 +59,32 @@ public class TrappingRainWater {
         return result;
     }
 
+    public static int trapWithStack(int[] height)
+    {
+        int ans = 0, current = 0;
+        Stack<Integer> st = new Stack<Integer>();
+        while (current < height.length) {
+            while (!st.empty() && height[current] > height[st.peek()]) {
+                int top = st.pop();
+                if (st.empty())
+                    break;
+                int distance = current - st.peek() - 1;
+                int bounded_height = Math.min(height[current], height[st.peek()]) - height[top];
+                ans += distance * bounded_height;
+            }
+            st.push(current++);
+        }
+        return ans;
+    }
+
     public static void testSolution() {
         int[] input1 = new int[]{0,1,0,2,1,0,1,3,2,1,2,1};
         int[] input2 = new int[]{1, 2, 3, 4};
         int[] input3 = new int[]{4, 3, 2, 1};
         int[] input4 = new int[]{1,2,3,4, 3, 2, 1};
         int[] input5 = new int[]{2, 0, 2};
-        var res1 = trapTwoPointers(input4);
-        var result2 =  tapWaterBrutForce(input5);
+//        var res1 = trapTwoPointers(input4);
+//        var result2 =  tapWaterBrutForce(input5);
+        var result2 =  trapWithStack(input1);
     }
 }
